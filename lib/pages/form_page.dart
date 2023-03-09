@@ -15,6 +15,27 @@ class _FormPageState extends State<FormPage> {
         title: const Text("Contatos"),
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.save),
+        onPressed: () {},
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Icon(Icons.person, size: 128,),
+            TextField(decoration: InputDecoration(
+              labelText: "Nome"
+            ),),
+            TextField(decoration: InputDecoration(
+                labelText: "Email"
+            ),),
+            TextField(decoration: InputDecoration(
+                labelText: "Phone"
+            ),),
+          ],
+        ),
+      ),
     );
   }
 }
