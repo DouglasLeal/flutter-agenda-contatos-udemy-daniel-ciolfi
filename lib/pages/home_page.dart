@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:agenda_contatos/Dao/contato_dao.dart';
 import 'package:agenda_contatos/models/contato.dart';
 import 'package:agenda_contatos/pages/form_page.dart';
 import 'package:flutter/material.dart';
@@ -14,20 +15,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List<Contato> contatos = [
-    Contato.fromMap({"nome": "Douglas", "email": "douglas@email.com",
-      "telefone": "1234-5678",
-      "imagem": ""
-    }),
-    Contato.fromMap({"nome": "Ana", "email": "ana@email.com",
-      "telefone": "1234-5678",
-      "imagem": "imagem"
-    }),
-    Contato.fromMap({"nome": "Pedro", "email": "pedro@email.com",
-      "telefone": "1234-5678",
-      "imagem": ""
-    }),
-  ];
+  final ContatoDao _dao = ContatoDao();
+
+  List<Contato> contatos = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    listarContatos();
+  }
+
+  listarContatos() async {
+    var c = await _dao.listar();
+    setState(() {
+      contatos = c;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +47,8 @@ class _HomePageState extends State<HomePage> {
           var contato = await Navigator.push(context, MaterialPageRoute(builder: (context) => FormPage()),);
 
           if(contato != null){
-            setState(() {
-              contatos.add(contato);
-            });
+            await _dao.criar(contato);
+            listarContatos();
           }
         },
       ),

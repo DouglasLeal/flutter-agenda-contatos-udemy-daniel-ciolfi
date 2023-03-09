@@ -13,8 +13,8 @@ class Contato{
     imagem = map['imagem'];
   }
 
-  Map toMap(){
-    Map<String, dynamic> map = {
+  Map<String, dynamic?> toMap(){
+    Map<String, dynamic?> map = {
       "nome": nome,
       "email": email,
       "telefone": telefone,
