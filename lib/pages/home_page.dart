@@ -98,10 +98,18 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.pop(context);
 
+                        var contato = await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FormPage(contato: contatos[index])),
+                        );
 
+                        if (contato.id != null) {
+                          await _dao.atualizar(contato);
+                          listarContatos();
+                        }
                       },
                       child: const Text(
                         "Editar",

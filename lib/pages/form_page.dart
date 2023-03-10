@@ -5,7 +5,9 @@ import 'dart:io';
 import 'dart:async';
 
 class FormPage extends StatefulWidget {
-  const FormPage({Key? key}) : super(key: key);
+  final Contato? contato;
+
+  const FormPage({this.contato, Key? key}) : super(key: key);
 
   @override
   State<FormPage> createState() => _FormPageState();
@@ -18,7 +20,19 @@ class _FormPageState extends State<FormPage> {
 
   final ImagePicker _picker = ImagePicker();
 
-  var imagem = "";
+  String? imagem = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    if(widget.contato != null){
+      _nomeController.text = "${widget.contato?.nome}";
+      _emailController.text = "${widget.contato?.email}";
+      _telefoneController.text = "${widget.contato?.telefone}";
+      imagem = widget.contato?.imagem;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +44,22 @@ class _FormPageState extends State<FormPage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save),
         onPressed: () {
-          var contato = Contato.fromMap({
-            "nome": _nomeController.text,
-            "email": _emailController.text,
-            "telefone": _telefoneController.text,
-            "imagem": imagem
-          });
+          if(widget.contato?.id == null) {
+            var contato = Contato.fromMap({
+              "nome": _nomeController.text,
+              "email": _emailController.text,
+              "telefone": _telefoneController.text,
+              "imagem": imagem
+            });
+            Navigator.pop(context, contato);
+          }else{
+            widget.contato?.nome =  _nomeController.text;
+            widget.contato?.email =  _emailController.text;
+            widget.contato?.telefone =  _telefoneController.text;
+            widget.contato?.imagem = imagem;
 
-          Navigator.pop(context, contato);
+            Navigator.pop(context, widget.contato);
+          }
         },
       ),
       body: SingleChildScrollView(
@@ -62,12 +84,11 @@ class _FormPageState extends State<FormPage> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-                image: FileImage(File(imagem)),
+                image: FileImage(File(imagem!)),
                 fit: BoxFit.cover
             ),
           ),),
       onTap: () async{
-        print("testando...");
         final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
         if(photo == null) return;
         setState(() {
